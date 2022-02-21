@@ -1,5 +1,7 @@
 # Tables
 
+![ERD](2022-02-22_ERD.png)
+
 ## Employee
 
 * employee_id   -PK
@@ -100,7 +102,7 @@ soft_name???
   * 'high'
 
 ---
-_\- if ticket submitted by a user(is_admin=true) then priority++_
+*\- if ticket submitted by a user(is_admin=true) then priority++*
 \- if ticket belongs to version(version_state='buggy') then priority++
 
 ---
