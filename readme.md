@@ -68,10 +68,30 @@ name???
 * user_id    - FK user.user_id, NOT_NULL        User (reporter)
 * version_id    - FK version.version_id, NOT_NULL    Version
 * Status        - ENUM(
-    - 'submitted',
-    - 'scrum_accept',
-    - 'dev_assigned',
-    - 'scrum_reject',
-    - 'dev_solved',
-    - 'qa_approved',
-    -'scr_approved')
+  * 'submitted',
+  * 'scrum_accept',
+  * 'dev_assigned',
+  * 'scrum_reject',
+  * 'dev_solved',
+  * 'qa_approved',
+  * 's cr_approved')
+\- trigger: version_id++, (NB default version_state='stable')
+* priority        ENUM(
+  * 'low',
+  * 'medium',
+  * 'high')
+
+\- tickets submitted by an Administrator user have priority 'high'.
+
+* scrum_id        FK: employee.employee_id        Scrum-master
+    \- constraint: only scrum from specified software-version
+* qa_id            FK: employee.
+* employee_id        QA-Engineer
+    \- constraint: only qa from specified software-version
+* developer_id        FK: employee.
+* employee_id        Developer
+    \- constraint: only employee from specified software-version
+* submission_date    datetime
+* closure_date        datetime
+
+?? For each ticket, the different states and the time spent on it by the development team are stored.
