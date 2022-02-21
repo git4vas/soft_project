@@ -2,11 +2,21 @@
 
 ## Employee
 
-* employee_id
-* name, antiquity, characteristics of his work devices (computer, monitor, etc.) and phone number
-* (system administrator)?
-  * (prog) availability
+* employee_id   -PK
+* name,
+* phone number
+
+---
+
+* (prog)?
   * (prog) work hours
+  * (prog) availability
+* (system administrator)?
+* (join_date)
+  * antiquity=now()-join_date,
+* characteristics of his work devices (computer, monitor, etc.)
+
+---
 
 ## Software
 
@@ -14,6 +24,9 @@
 * (name)
 * scrum master        - FK empl
 * quality assurance    - FK empl
+  * check that different from sm
+
+*NULLable FKs!!*
 
 ## Dev_team
 
@@ -51,14 +64,14 @@ name???
 * client_id        -FK
 * Administrator role y/n
 * Name
-* creation 
+* creation
 * position
 * email
 
 ## Contract/Licence
 
 * soft_id            FK: soft.soft_id
-* client_name        
+* client_id          FK: client.client_id
 * initial_date        datetime
 * final_date        datetime
 
@@ -95,3 +108,7 @@ name???
 * closure_date        datetime
 
 ?? For each ticket, the different states and the time spent on it by the development team are stored.
+
+## Notes
+
+*NULLable FKs in __soft__ table, ,ind when referencing from __version__*
