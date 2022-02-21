@@ -1,4 +1,7 @@
+BEGIN;
+
 DROP SCHEMA IF EXISTS soft_project CASCADE;
+
 CREATE SCHEMA IF NOT EXISTS soft_project;
 
 SET SEARCH_PATH TO soft_project;
@@ -128,9 +131,10 @@ CREATE TABLE IF NOT EXISTS ticket
     version_status workflow,
  -- version_status VARCHAR CHECK (version_status IN ('submitted', 'scrum_accept', 'dev_assigned', 'scrum_reject', 'dev_solved', 'qa_approved', 'scrum_approved' )),
     employee_id INT, --fk
-    ticket_priority INT, --check...
+    ticket_priority INT, 
+  -- (depends on user(is_admin), software_version(version_state))
     submitted DATE,
-    closed DATE CHECK (submitted < closed)
+    closed DATE CHECK (closed is NULL OR closed >= submitted)
  -- ticket_time PERIOD =closed-submitted
 
 );

@@ -20,10 +20,10 @@
 
 ## Software
 
-* soft_id        -PK
+* software_id        -PK
 * (name)
-* scrum master        - FK empl
-* quality assurance    - FK empl
+* scrum master sm_id        - FK empl
+* quality assurance qa_id   - FK empl
   * check that different from sm
 
 *NULLable FKs!!*
@@ -35,13 +35,15 @@ fk_employee
 
 * fk_soft
 * PK(emp,soft)
-* Version
+
+## Version
+
 * version_id    - PK
 * fk_Soft_id    - FK to Soft
 * fk_employee_qa_works
 * fk_employee_scrum_works
 
-name???
+soft_name???
 
 * version_state ENUM(
   * 'stable',
@@ -89,26 +91,38 @@ name???
   * 'qa_approved',
   * 's cr_approved')
 \- trigger: version_id++, (NB default version_state='stable')
-* priority        ENUM(
+
+---
+
+* priority        SMALLINT or:
   * 'low',
   * 'medium',
-  * 'high')
+  * 'high'
 
-\- tickets submitted by an Administrator user have priority 'high'.
+---
+_\- if ticket submitted by a user(is_admin=true) then priority++_
+\- if ticket belongs to version(version_state='buggy') then priority++
 
-* scrum_id        FK: employee.employee_id        Scrum-master
-    \- constraint: only scrum from specified software-version
-* qa_id            FK: employee.
-* employee_id        QA-Engineer
-    \- constraint: only qa from specified software-version
-* developer_id        FK: employee.
+---
+
 * employee_id        Developer
     \- constraint: only employee from specified software-version
+
 * submission_date    datetime
 * closure_date        datetime
 
+---
+
 ?? For each ticket, the different states and the time spent on it by the development team are stored.
+
+---
+
+CHECK *user_id* rights to issue ***<- PK ticket(ticket_id) ->*** to a specific *version_id* via:
+
+-> PK software_user(user_id), FK software_user(client_id) -> PK client(client_id) <- PK(FK licence(client_id), FK licence(software_id)) -> PK software(software_id) <- FK software_version(software_id), PK software_version(version_id) <-
+
+---
 
 ## Notes
 
-*NULLable FKs in __soft__ table, ,ind when referencing from __version__*
+*NULLable FKs in **soft** table, mind when referencing from **version***
