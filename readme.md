@@ -1,6 +1,6 @@
 # Tables
 
-![ERD](2022-02-22_ERD.png)
+![ERD](2022-02-23_ERD.png)
 
 ## Employee
 
@@ -10,10 +10,10 @@
 
 ---
 
-* (prog)?
+* (is prog)?
   * (prog) work hours
   * (prog) availability
-* (system administrator)?
+* (is system administrator)?
 * (join_date)
   * antiquity=now()-join_date,
 * characteristics of his work devices (computer, monitor, etc.)
