@@ -1,6 +1,6 @@
 # Tables
 
-![ERD](2022-02-23_ERD.png)
+![ERD](2022-02-24_ERD.png)
 
 ## Employee
 
@@ -27,7 +27,7 @@ All the employees developing the software
 All kinds of software offered by the company with assigned ScrumMaster and QualityAssurance specialist (different employees)
 
 * software_id        -PK
-* (name)
+* name
 * scrum master sm_id        - FK empl
 * quality assurance qa_id   - FK empl
   * check that different from sm
@@ -73,16 +73,17 @@ Companies authorized to use SaaS according to the License
 Client's employee using the SaaS, capable of issuing tickets concerning the specific software_version
 
 * user_id        INT, autoincrement
-* client_id        -FK
-* Administrator role y/n
-* Name
-* creation
-* position
+* username        unique
+* Full Name
 * email
+* client_id        -FK
+* position
+* creation
+* Administrator role y/n
 
 ---
 
-## _add a table user-version with checks to determine who can issue the tickets_
+## *add a table user-version with checks to determine who can issue the tickets*
 
 ---
 
