@@ -63,18 +63,19 @@ CREATE TYPE software_state AS ENUM ('stable', 'buggy', 'old');
 DROP TABLE IF EXISTS software_version;
 CREATE TABLE IF NOT EXISTS software_version
 (
-    id SERIAL PRIMARY KEY,
     software_id INT
         REFERENCES software(id)
-        ON DELETE CASCADE,    
+        ON DELETE CASCADE,
+    id SERIAL PRIMARY KEY,
+    
     state software_state,
       --CHECK (state IN ('stable', 'buggy', 'old')),
         -- 
     initial_release DATE NOT NULL,
     final_circulation DATE,
     comments TEXT
-
--- actualization_dates DATETIME >>>>> WTF??
+ -- actualization_dates DATETIME >>>>> WTF??
+ -- what if PK (software_id,id) how to reference from ticket????
 );
 
 ------------------------------
@@ -109,12 +110,12 @@ CREATE TABLE IF NOT EXISTS software_user
 );
 
 
-------------------------------
+---------------------------------
 --table to assign version to user
-------------------------------
+---------------------------------
 
-DROP TABLE IF EXISTS used_version;
-CREATE TABLE IF NOT EXISTS used_version
+DROP TABLE IF EXISTS user_version;
+CREATE TABLE IF NOT EXISTS user_version
 (
 	version_id INT
         REFERENCES software_version (id)
@@ -143,7 +144,9 @@ PRIMARY KEY (client_id, software_id)
 	
 -----------------------------
 
-CREATE TYPE workflow AS ENUM ('submitted', 'scrum_accept', 'dev_assigned', 'scrum_reject', 'dev_solved', 'qa_approved', 'scrum_approved' );
+CREATE TYPE workflow AS ENUM ('submitted', 'scrum_accept', 'dev_assigned', 'scrum_reject', 'dev_solved', 'qa_approved', 'scrum_approved');
+
+
 DROP TABLE IF EXISTS ticket;
 CREATE TABLE IF NOT EXISTS ticket
 (
@@ -153,14 +156,17 @@ CREATE TABLE IF NOT EXISTS ticket
     version_id INT
         REFERENCES software_version(id),
     version_status workflow,
- -- version_status VARCHAR CHECK (version_status IN ('submitted', 'scrum_accept', 'dev_assigned', 'scrum_reject', 'dev_solved', 'qa_approved', 'scrum_approved' )),
-    employee_id INT, --fk
+/*TODO version_status VARCHAR CHECK (version_status IN ('submitted', 'scrum_accept', 'dev_assigned', 'scrum_reject', 'dev_solved', 'qa_approved', 'scrum_approved' )),
+*/
+    programmer_id INT
+        REFERENCES employee(id),
+/*TODO CHECK employee(is_programmer='true')  */
+
     ticket_priority INT, 
-  -- (depends on user(is_admin), software_version(version_state))
+/*TODO ++ if user(is_admin), ++ if software_version(state)='buggy') */
     submitted DATE,
     closed DATE CHECK (closed is NULL OR closed >= submitted)
- -- ticket_time PERIOD =closed-submitted
-
+-- ticket_time PERIOD =closed-submitted
 );
 
 COMMIT;

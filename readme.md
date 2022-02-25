@@ -1,6 +1,6 @@
 # Tables
 
-![ERD](2022-02-24_ERD.png)
+![ERD](2022-02-25_ERD.png)
 
 ## Employee
 
@@ -33,6 +33,11 @@ All kinds of software offered by the company with assigned ScrumMaster and Quali
   * check that different from sm
 
 *NULLable FKs!!*
+
+    TODO name -> table erd
+    BUG
+    FIXME
+
 
 ## Dev_team
 
@@ -81,9 +86,11 @@ Client's employee using the SaaS, capable of issuing tickets concerning the spec
 * creation
 * Administrator role y/n
 
+## user-version 
+
 ---
 
-## *add a table user-version with checks to determine who can issue the tickets*
+*checks to determine who can issue the tickets??*
 
 ---
 
@@ -107,9 +114,29 @@ Client's employee using the SaaS, capable of issuing tickets concerning the spec
   * 'dev_solved',
   * 'qa_approved',
   * 's cr_approved')
-\- trigger: version_id++, (NB default version_state='stable')
+
+    \- trigger: version_id++, (NB default version_state='stable')
 
 ---
+
+**Table 1. Required Scripts**
+
+|Initial State|Target State|Comment|
+| --- | --- | --- |
+(initial)|submitted||
+|submitted|scrum_accept<br>scrum_reject||\
+|scrum_accept|dev_assigned<br>submitted||
+|dev_assigned|dev_solved||
+|scrum_reject|(final)||
+|dev_solved|qa_approved<br>dev_assigned||
+|qa_approved|scr_approved||
+|scr_approved|(final)
+
+
+
+
+---
+
 
 * priority        SMALLINT or:
   * 'low',
@@ -124,18 +151,22 @@ Client's employee using the SaaS, capable of issuing tickets concerning the spec
 
 ---
 
-* employee_id        Developer
+* employee_id
+
+-- CHECK employee(is_programmer='true')
+
     \- constraint: only employee from specified software-version
+
 * submission_date    datetime
 * closure_date        datetime
 
 ---
 
-?? For each ticket, the different states and the time spent on it by the development team are stored.
+    ?? For each ticket, the different states and the time spent on it by the development team are stored.
 
 ---
 
-### CHECKS user-version (see above)
+### CHECKS user_version (see above)
 
  *user_id* rights to issue ***<- PK ticket(ticket_id) ->*** to a specific *version_id* via:
 
