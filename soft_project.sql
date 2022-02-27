@@ -166,7 +166,7 @@ CREATE TABLE IF NOT EXISTS ticket
 /*TODO trigger the correct workflow*/
 
     request_cause CAUSE,
-    request TEXT,
+    request TEXT UNIQUE,
  
     programmer_id INT
         REFERENCES employee(id) DEFAULT NULL,
