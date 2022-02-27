@@ -77,7 +77,7 @@ Client Administrator
 - (similar to Client User) View his/her tickets and their status
 - (similar to Client User) Modify and delete unassigned tickets (not accepted or rejected yet)
 - (similar to Client User) View, modify, delete personal information
-- View all the tickets of the users of the client company
+10. View all the tickets of the users of the client company
 - Modify and delete unassigned tickets (not accepted or rejected yet) of the users
 - View the number of tickets per software
 - Delete a solved ticket

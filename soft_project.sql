@@ -159,10 +159,13 @@ CREATE TABLE IF NOT EXISTS ticket
         REFERENCES software_user(id),
     version_id INT
         REFERENCES software_version(id),
-/*TODO HOW?? CHECK (version_id IN (SELECT version_id FROM user_version WHERE user_id=<this_user>)*/
+/*FIXME test on postgres or create user18
+*/
+CHECK (version_id IN (SELECT version_id FROM user_version WHERE username IN (SELECT current_user)) --test =
 
     status workflow DEFAULT 'submitted',
 --- status VARCHAR CHECK (version_status IN ('submitted', 'scrum_accept', 'dev_assigned', 'scrum_reject', 'dev_solved', 'qa_approved', 'solved')),
+
 /*TODO trigger the correct workflow*/
 
     request_cause CAUSE,
@@ -176,11 +179,27 @@ CREATE TABLE IF NOT EXISTS ticket
                 if cause='feature' software_version.state='old' */
 
     ticket_priority INT DEFAULT 0, 
-/*TODO if user(is_admin) ticket_priority++, if software_version(state)='buggy' ticket_priority++) */
+
+/*
+TODO $$ if (SELECT is_admin FROM software_user) ticket_priority++ */
+/*
+TODO $$ if software_version(state)='buggy' ticket_priority++) */
 
     submitted_date DATE DEFAULT now() NOT NULL,
     closed_date DATE CHECK (closed_date is NULL OR closed_date >= submitted_date) DEFAULT NULL
-/*TODO -- ticket_time PERIOD = closed-submitted*/
+
+/*
+FIXME ticket_time_spent INTERVAL
+SELECT id, (closed_date - submitted_date) as ticket_time_spent 
+FROM ticket
+
+OR
+
+SELECT id, AGE(closed_date, submitted_date) as ticket_time_spent 
+FROM ticket
+
+
+*/
 
 );
 
