@@ -38,8 +38,9 @@ The new version of the software is updated for all the companies that have a cur
 ## 1.3. Required scripts
 
 You will write scripts containing queries allowing to perform actions described in the following table:
+<!--
+### Table 1. Required Scripts
 
-**Table 1. Required Scripts**
 | User category | Actions |
 | --- | --- |
 | Database Users | Define privileges of the users that will access directly to the database: <br>  - Database Administrator.<br>  - Scrum Master.<br>  - Quality Assurance tester. |
@@ -49,6 +50,9 @@ You will write scripts containing queries allowing to perform actions described 
 | Programmer | Update the status of an assigned ticket and store the historical state (**as a transaction**) <br>View all the assigned tickets (current and historical) <br>View, modify, delete personal information |
 | QA tester | Update the status of an assigned ticket and store the historical state (**as a transaction**) <br>View all the assigned tickets (current and historical) <br>View, modify, delete personal information |
 | System Administrator | Same scripts as scrum master (for all softwares) <br>View, create, modify, delete personal information of the development team <br>View, create, modify, delete scrum masters <br>Queries to: <br>- List of all the tickets ongoing <br>- List the closed tickets <br>- Number of tickets in the different states <br>- Show the programmers with more than a year in the company <br>- Show the softwares with more than 5 versions <br>- For each software: How many tickets had been solved, How many are ongoing, how many have been rejected <br>- Show all the client users who got more than two tickets rejected |
+-->
+
+
 
 **Table 1. Required Scripts**
 User category / Actions

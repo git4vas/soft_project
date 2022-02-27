@@ -1,8 +1,12 @@
-# Tables
+# LAB Project Report<br/>Ticketing Service Management for a Company
+
+## ERD
 
 ![ERD](2022-02-25_ERD.png)
 
-## Employee
+## Tables
+
+### Employee
 
 All the employees developing the software
 
@@ -22,7 +26,7 @@ All the employees developing the software
 
 ---
 
-## Software
+### Software
 
 All kinds of software offered by the company with assigned ScrumMaster and QualityAssurance specialist (different employees)
 
@@ -39,7 +43,7 @@ All kinds of software offered by the company with assigned ScrumMaster and Quali
     FIXME
 
 
-## Dev_team
+### Dev_team
 
 * fk_soft
 * PK(emp,soft)
@@ -47,7 +51,7 @@ All kinds of software offered by the company with assigned ScrumMaster and Quali
 *How t perform programmers check? (a set of programmers -> dev table)
 fk_employee??*
 
-## Version
+### Version
 
 is assigned to a client, can be improved according to the demands, with new version being assigned to the company which issued the corresponding ticket, or updated for everybody in case of a bugfix
 
@@ -64,7 +68,7 @@ is assigned to a client, can be improved according to the demands, with new vers
 * comments
 * actualization dates
 
-## Client
+### Client
 
 Companies authorized to use SaaS according to the License
 
@@ -73,7 +77,7 @@ Companies authorized to use SaaS according to the License
 * contact information,
 * address,
 
-## User
+### User
 
 Client's employee using the SaaS, capable of issuing tickets concerning the specific software_version
 
@@ -86,7 +90,7 @@ Client's employee using the SaaS, capable of issuing tickets concerning the spec
 * creation
 * Administrator role y/n
 
-## user-version 
+### user-version 
 
 ---
 
@@ -94,14 +98,14 @@ Client's employee using the SaaS, capable of issuing tickets concerning the spec
 
 ---
 
-## Contract/Licence
+### Contract/Licence
 
 * soft_id            FK: soft.soft_id
 * client_id          FK: client.client_id
 * initial_date        datetime
 * final_date        datetime
 
-## Ticket
+### Ticket
 
 * PK ticket_id    - INT, autoincrement        Ticket Number
 * user_id    - FK user.user_id, NOT_NULL        User (reporter)
@@ -124,17 +128,31 @@ Client's employee using the SaaS, capable of issuing tickets concerning the spec
 |Initial State|Target State|Comment|
 | --- | --- | --- |
 (initial)|submitted||
-|submitted|scrum_accept<br>scrum_reject||\
-|scrum_accept|dev_assigned<br>submitted||
+|submitted|scrum_accept<br/>scrum_reject||\
+|scrum_accept|dev_assigned||
 |dev_assigned|dev_solved||
 |scrum_reject|(final)||
-|dev_solved|qa_approved<br>dev_assigned||
-|qa_approved|scr_approved||
-|scr_approved|(final)
+|dev_solved|qa_approved<br/>dev_assigned||
+|qa_approved|scr_approved<br/>dev_assigned||
+|scr_approved|(final)||
 
+TODO scr_approved should trigger:
 
+    INSERT INTO software_version (id, software_id, state, initial_release, final_circulation)
+    VALUES
+    (<soft_id>, <last_version_id>++), 'stable', now(), NULL)
 
+and also modify the last version entry like this:
 
+    UPDATE software_version 
+    SET final_circulation=now()
+    WHERE id=<last_version_id>
+
+and also modify the user_version entries like this:
+
+    UPDATE user_version 
+    SET version_id=<new_version_id>
+    WHERE version_id=<last_version_id> AND user=
 ---
 
 
@@ -166,7 +184,7 @@ Client's employee using the SaaS, capable of issuing tickets concerning the spec
 
 ---
 
-### CHECKS user_version (see above)
+#### CHECKS user_version (see above)
 
  *user_id* rights to issue ***<- PK ticket(ticket_id) ->*** to a specific *version_id* via:
 
@@ -174,6 +192,6 @@ Client's employee using the SaaS, capable of issuing tickets concerning the spec
 
 ---
 
-## Notes
+### Notes
 
 *NULLable FKs in **soft** table, mind when referencing from **version***

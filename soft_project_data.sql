@@ -82,8 +82,8 @@ VALUES
   DELETE FROM software_version;
   INSERT INTO software_version (id, software_id, state, initial_release, final_circulation)
 VALUES
-(1, 1, 'buggy', '2022-01-01', '2022-02-18'),
-(2, 1, 'old', '2022-02-18', '2022-02-23'), --check initial_release=final_circulation of previous one
+(1, 1, 'old', '2022-01-01', '2022-02-18'),
+(2, 1, 'buggy', '2022-02-18', '2022-02-23'), --check initial_release=final_circulation of previous one
 (3, 1, 'stable', '2022-02-23', NULL),
 (4, 2,NULL, '2022-01-02', NULL),
 (5, 3,NULL, '2022-01-03', NULL),
@@ -139,7 +139,19 @@ VALUES --check??? 1-6, ,7 8 10 11 15, 9 12 13, 16 18-20, 14 17 12345
 (17, 3),
 (18, 5);
 
+DELETE FROM ticket;
+  --INSERT INTO ticket (id, user_id, version_id, status=auto, , )
+INSERT INTO ticket (id, user_id, version_id, request_cause, request, programmer_id, submitted_date, closed_date)
+VALUES
+ (1, 18, 7, 'feature', 'Suspendisse aliquet, sem ut cursus luctus, ipsum leo elementum sem,', 6,'2021-01-30', '2022-05-03'),
+ (2, 5, 7, 'feature', 'dolor. Fusce feugiat. Lorem ipsum dolor sit amet, consectetuer adipiscing', 4,'2021-07-16', '2022-02-12'),
+ (3, 10, 4, 'bug', 'montes, nascetur ridiculus mus. Proin vel nisl. Quisque fringilla euismod', 5,'2022-11-15', '2023-07-19'),
+ (4, 12, 3, 'feature', 'mauris elit, dictum eu, eleifend nec, malesuada ut, sem. Nulla', 12, '2021-06-16', '2022-06-13'),
+ (5, 15, 6, 'feature', 'vel pede blandit congue. In scelerisque scelerisque dui. Suspendisse ac', 17, DEFAULT, NULL),
+ (6, 8, 3, 'bug', 'sagittis semper. Nam tempor diam dictum sapien. Aenean massa. Integer', 16, '2021-06-11', '2022-04-04'),
+ (7, 4, 6, 'feature', 'pretium aliquet, metus urna convallis erat, eget tincidunt dui augue', 6, '2021-04-22', '2022-05-11'),
+ (8, 10, 6, 'feature', 'non, egestas a, dui. Cras pellentesque. Sed dictum. Proin eget', 5, '2021-03-31', '2022-11-11'),
+ (9, 13, 6, 'feature', 'Etiam gravida molestie arcu. Sed eu nibh vulputate mauris sagittis', 15, '2022-12-17', '2023-01-03'),
+ (10, 3, 5, 'feature', 'tempus non, lacinia at, iaculis quis, pede. Praesent eu dui.', 17, '2021-10-19', '2022-02-22');
 
-  --DELETE FROM ticket;
-  --INSERT INTO ticket (id, software_id, state, initial_release, final_circulation)
---VALUES
+ /*TODO check user_version*/

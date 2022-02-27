@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS software_version
         REFERENCES software(id)
         ON DELETE CASCADE,
     id SERIAL PRIMARY KEY,
-    
+
     state software_state,
       --CHECK (state IN ('stable', 'buggy', 'old')),
         -- 
@@ -126,8 +126,10 @@ CREATE TABLE IF NOT EXISTS user_version
 PRIMARY KEY (user_id, version_id)
 );
 
-------------------------------
 
+-------------LICENSE----------------
+--table to assign software to client
+------------------------------------
 
 CREATE TABLE IF NOT EXISTS license
 (
@@ -141,32 +143,45 @@ end_date DATE CHECK (initial_date < end_date),
 PRIMARY KEY (client_id, software_id)
 );
 
-	
------------------------------
 
-CREATE TYPE workflow AS ENUM ('submitted', 'scrum_accept', 'dev_assigned', 'scrum_reject', 'dev_solved', 'qa_approved', 'scrum_approved');
+
+-------------TICKET----------------
+
+CREATE TYPE workflow AS ENUM ('submitted', 'scrum_accept', 'dev_assigned', 'scrum_rejected', 'dev_solved', 'qa_approved', 'solved');
+CREATE TYPE CAUSE AS ENUM ('bug', 'feature');
 
 
 DROP TABLE IF EXISTS ticket;
 CREATE TABLE IF NOT EXISTS ticket
 (
-    ticket_id SERIAL PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     user_id INT
         REFERENCES software_user(id),
     version_id INT
         REFERENCES software_version(id),
-    version_status workflow,
-/*TODO version_status VARCHAR CHECK (version_status IN ('submitted', 'scrum_accept', 'dev_assigned', 'scrum_reject', 'dev_solved', 'qa_approved', 'scrum_approved' )),
-*/
+/*TODO HOW?? CHECK (version_id IN (SELECT version_id FROM user_version WHERE user_id=<this_user>)*/
+
+    status workflow DEFAULT 'submitted',
+--- status VARCHAR CHECK (version_status IN ('submitted', 'scrum_accept', 'dev_assigned', 'scrum_reject', 'dev_solved', 'qa_approved', 'solved')),
+/*TODO trigger the correct workflow*/
+
+    request_cause CAUSE,
+    request TEXT,
+ 
     programmer_id INT
-        REFERENCES employee(id),
+        REFERENCES employee(id) DEFAULT NULL,
 /*TODO CHECK employee(is_programmer='true')  */
 
-    ticket_priority INT, 
-/*TODO ++ if user(is_admin), ++ if software_version(state)='buggy') */
-    submitted DATE,
-    closed DATE CHECK (closed is NULL OR closed >= submitted)
--- ticket_time PERIOD =closed-submitted
+/*TODO trigger: if cause='bug' software_version.state='buggy' 
+                if cause='feature' software_version.state='old' */
+
+    ticket_priority INT DEFAULT 0, 
+/*TODO if user(is_admin) ticket_priority++, if software_version(state)='buggy' ticket_priority++) */
+
+    submitted_date DATE DEFAULT now() NOT NULL,
+    closed_date DATE CHECK (closed_date is NULL OR closed_date >= submitted_date) DEFAULT NULL
+/*TODO -- ticket_time PERIOD = closed-submitted*/
+
 );
 
 COMMIT;
