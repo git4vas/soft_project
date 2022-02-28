@@ -1,0 +1,5 @@
+CREATE ROLE employee;
+
+
+CREATE ROLE sysadmin
+GRANT ALL PRIVILEGES ON 

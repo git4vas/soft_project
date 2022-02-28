@@ -4,7 +4,7 @@ SET SEARCH_PATH TO soft_project--;
 */
 
 ----------------------------------
-----------Client Users------------+is_admin
+----------Client Users------------
 ----------------------------------
 /*
 FIXME https://devdocs.io/postgresql~12/sql-grant
@@ -19,9 +19,9 @@ WHERE user_id=10;
 /*Create new tickets +++ADMIN+++*/
 INSERT INTO ticket (id, user_id, version_id, request_cause, request, programmer_id, submitted_date, closed_date)
 VALUES
- (12, 18, 7, 'feature', 'make round buttons square', DEFAULT,now(), DEFAULT);
+ ((SELECT id FROM ticket ORDER BY id DESC LIMIT(1))+1, 18, 7, 'feature', 'make auto- increment and round buttons square', DEFAULT,now(), DEFAULT);
 /*
-BUG don't fix! DEFAULT id does not self-increment
+FEATURE! DEFAULT id self-increment
 TODO x3: user_id=<AUTO>,
 -- CHECK version_id via {user_version.user_id, user_version.version_id} 
 -- if user.is_admin ticket.user_id=* via database users and permissions according to is_admin
@@ -76,8 +76,10 @@ SELECT * FROM software_user
 
 
 
+----------------------------------
+-------Client Administrator-------
+----------------------------------
 
--------Client Administrator---------------
 /* (similar to Client User)
 (similar to Client User) Modify and delete unassigned tickets (not accepted or rejected yet)
 (similar to Client User) View, modify, delete personal information
@@ -234,8 +236,11 @@ upd
 TODO Assign a ticket to the programmer and update the state of the software version (**as a transaction**)
 TODO Approve a ticket and create a new version of the software (**as a transaction**)
 
-begin transaction
-commit;
+BEGIN;
+UPDATE ticket SET state = 
+    WHERE id = ;
+-- etc etc
+COMMIT;
 
 
 TODO View the software versions’ list

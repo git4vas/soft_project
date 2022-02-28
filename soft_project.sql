@@ -15,12 +15,14 @@ CREATE TABLE IF NOT EXISTS employee
     email VARCHAR (255),
     is_sysadmin BOOLEAN DEFAULT 'false',
     is_programmer BOOLEAN DEFAULT 'false',
+    date_join DATE,
 
+/* FIXME */
 -- for programmers!--
 -- https://stackoverflow.com/questions/34855197/sql-constraint-to-check-whether-value-doesnt-exist-in-another-table
     wrk_hrs INTERVAL,
-    is_available_on_we BOOLEAN DEFAULT 'false'
----------------------
+    is_available_on_we BOOLEAN DEFAULT 'false',
+    wrk_dev VARCHAR (255) DEFAULT 'computer & monitor'
 );
 
 -----------------------------
@@ -58,24 +60,20 @@ PRIMARY KEY (employee_id, software_id)
 
 ------------------------------
 
-
-CREATE TYPE software_state AS ENUM ('stable', 'buggy', 'old');
+CREATE TYPE SOFTWARE_STATE AS ENUM ('stable', 'buggy', 'old');
 DROP TABLE IF EXISTS software_version;
-CREATE TABLE IF NOT EXISTS software_version
+
 (
     software_id INT
         REFERENCES software(id)
         ON DELETE CASCADE,
     id SERIAL PRIMARY KEY,
-
-    state software_state,
+    state SOFTWARE_STATE,
       --CHECK (state IN ('stable', 'buggy', 'old')),
-        -- 
-    initial_release DATE NOT NULL,
-    final_circulation DATE,
+
+    date_release DATE NOT NULL,
+    date_final DATE,
     comments TEXT
- -- actualization_dates DATETIME >>>>> WTF??
- -- what if PK (software_id,id) how to reference from ticket????
 );
 
 ------------------------------
@@ -85,7 +83,7 @@ CREATE TABLE IF NOT EXISTS client
 (
     id SERIAL PRIMARY KEY,
     name VARCHAR UNIQUE,
-    phone varchar (14) default NULL,
+    phone varchar(14) default NULL,
     email varchar(255) default NULL,
     address varchar(255) default NULL,
     city varchar(255),
@@ -95,17 +93,18 @@ CREATE TABLE IF NOT EXISTS client
 
 ------------------------------
 
+DROP TABLE IF EXISTS software_user;
 CREATE TABLE IF NOT EXISTS software_user
 (
     id SERIAL PRIMARY KEY,
-    username VARCHAR UNIQUE,
-    fullname VARCHAR,
-    email VARCHAR UNIQUE,
+    username VARCHAR(100) UNIQUE,
+    fullname VARCHAR(255),
+    email VARCHAR(255) UNIQUE,
     client_id INT
       REFERENCES client(id)
       ON DELETE CASCADE,
-    position VARCHAR,
-    creation_date DATE ,-- CHECK (creation_date > now()) 
+    position VARCHAR(100),
+    date_creation DATE ,-- CHECK (date_creation > now()) 
     is_admin BOOLEAN DEFAULT 'false'
 );
 
@@ -138,8 +137,8 @@ CREATE TABLE IF NOT EXISTS license
     software_id INT 
         REFERENCES software(id),
 
-initial_date DATE,
-end_date DATE CHECK (initial_date < end_date),
+date_initial DATE,
+date_end DATE CHECK (date_initial < date_end),
 PRIMARY KEY (client_id, software_id)
 );
 
@@ -147,7 +146,7 @@ PRIMARY KEY (client_id, software_id)
 
 -------------TICKET----------------
 
-CREATE TYPE workflow AS ENUM ('submitted', 'scrum_accept', 'dev_assigned', 'scrum_rejected', 'dev_solved', 'qa_approved', 'solved');
+CREATE TYPE WORKFLOW AS ENUM ('submitted', 'scrum_accept', 'dev_assigned', 'scrum_rejected', 'dev_solved', 'qa_approved', 'solved');
 CREATE TYPE CAUSE AS ENUM ('bug', 'feature');
 
 
@@ -160,11 +159,10 @@ CREATE TABLE IF NOT EXISTS ticket
     version_id INT
         REFERENCES software_version(id),
 /*FIXME test on postgres or create user18
+CHECK (version_id IN (SELECT version_id FROM user_version WHERE username IN (SELECT current_user)), --test =
 */
-CHECK (version_id IN (SELECT version_id FROM user_version WHERE username IN (SELECT current_user)) --test =
-
-    status workflow DEFAULT 'submitted',
---- status VARCHAR CHECK (version_status IN ('submitted', 'scrum_accept', 'dev_assigned', 'scrum_reject', 'dev_solved', 'qa_approved', 'solved')),
+    status WORKFLOW DEFAULT 'submitted',
+-- status VARCHAR CHECK (version_status IN ('submitted', 'scrum_accept', 'dev_assigned', 'scrum_reject', 'dev_solved', 'qa_approved', 'solved')),
 
 /*TODO trigger the correct workflow*/
 
@@ -185,17 +183,17 @@ TODO $$ if (SELECT is_admin FROM software_user) ticket_priority++ */
 /*
 TODO $$ if software_version(state)='buggy' ticket_priority++) */
 
-    submitted_date DATE DEFAULT now() NOT NULL,
-    closed_date DATE CHECK (closed_date is NULL OR closed_date >= submitted_date) DEFAULT NULL
+    date_submitted DATE DEFAULT now() NOT NULL,
+    date_closed DATE CHECK (date_closed is NULL OR date_closed >= date_submitted) DEFAULT NULL
 
 /*
 FIXME ticket_time_spent INTERVAL
-SELECT id, (closed_date - submitted_date) as ticket_time_spent 
+SELECT id, (date_closed - date_submitted) as ticket_time_spent 
 FROM ticket
 
 OR
 
-SELECT id, AGE(closed_date, submitted_date) as ticket_time_spent 
+SELECT id, AGE(date_closed, date_submitted) as ticket_time_spent 
 FROM ticket
 
 

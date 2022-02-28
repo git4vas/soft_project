@@ -8,7 +8,7 @@ VALUES
   (4, 'BuzzFeed', '07 21 68 97 75', 'ac@protonmail.edu', 'P.O. Box 166, 6447 Sagittis. Ave', 'Angoulême', '21343'),
   (5, 'Arcu Vivamus Indus', '02 68 72 47 67', 'nullam@protonmail.org', '723-3277 Pharetra Av.', 'Villenave-d''Ornon', '80941');
 DELETE  FROM employee;
-INSERT INTO employee (id, name, phone, email)
+INSERT INTO employee (id, name, phone, email, date_join)
 VALUES
   (1, 'Chancellor Rich', '09 65 86 88 78', 'chancellorrich@google.edu'),
   (2, 'Lora Poor', '09 65 86 88 78', 'chancellorrich@google.edu'),
@@ -30,7 +30,7 @@ VALUES
   (18, 'Trevor Vaughan', '06 55 45 57 86', 'trevorvaughn1028@yahoo.edu');
 
 DELETE  FROM software_user;
-INSERT INTO software_user (id, username, fullname, email, client_id, position, creation_date, is_admin)
+INSERT INTO software_user (id, username, fullname, email, client_id, position, date_creation, is_admin)
 VALUES
 
 (1, 'enoch', 'Enoch Lowe', 'Enoch_Lowe7757@hourpy.biz', 1, 'Service Supervisor', '2021-11-16', 'False'),
@@ -64,7 +64,7 @@ VALUES
 (5, 'stupidsoft', 9, 10);
 
 DELETE FROM license;
-INSERT INTO license (client_id, software_id, initial_date, end_date)
+INSERT INTO license (client_id, software_id, date_initial, date_end)
 VALUES
 (1, 1, '2021-09-04', '2022-09-06'),
 (1, 3, '2022-04-06', '2022-12-29'),
@@ -80,10 +80,10 @@ VALUES
 
 
   DELETE FROM software_version;
-  INSERT INTO software_version (id, software_id, state, initial_release, final_circulation)
+  INSERT INTO software_version (id, software_id, state, date_release, date_final)
 VALUES
 (1, 1, 'old', '2022-01-01', '2022-02-18'),
-(2, 1, 'buggy', '2022-02-18', '2022-02-23'), --check initial_release=final_circulation of previous one
+(2, 1, 'buggy', '2022-02-18', '2022-02-23'), --check date_release = date_final of previous one
 (3, 1, 'stable', '2022-02-23', NULL),
 (4, 2,NULL, '2022-01-02', NULL),
 (5, 3,NULL, '2022-01-03', NULL),
@@ -141,7 +141,7 @@ VALUES --check??? 1-6, ,7 8 10 11 15, 9 12 13, 16 18-20, 14 17 12345
 
 DELETE FROM ticket;
   --INSERT INTO ticket (id, user_id, version_id, status=auto, , )
-INSERT INTO ticket (id, user_id, version_id, request_cause, request, programmer_id, submitted_date, closed_date)
+INSERT INTO ticket (id, user_id, version_id, request_cause, request, programmer_id, date_submitted, date_closed)
 VALUES
  (1, 18, 7, 'feature', 'Suspendisse aliquet, sem ut cursus luctus, ipsum leo elementum sem,', 6,'2021-01-30', '2022-05-03'),
  (2, 5, 7, 'feature', 'dolor. Fusce feugiat. Lorem ipsum dolor sit amet, consectetuer adipiscing', 4,'2021-07-16', '2022-02-12'),
