@@ -126,7 +126,7 @@ DELETE FROM ticket
 SELECT * FROM ticket;
 /*
 -- View the number of tickets per software (version)
--- of the client company this admin zorks for
+-- of the client company this admin works for
 DONE
 FIXME without nested select
 */
@@ -149,12 +149,13 @@ GROUP BY version_id;
 /*
 BUG HOWWWW??????*/
 --View the number of tickets per software (version)
-SELECT t.id
-FROM ticket as t
+SELECT t.id, s.name
+FROM ticket as t, software_version as sv, software as s, license as l, software_user as su1,  software_user as su1
 WHERE user_id = 18
   AND l.client_id = su.id
-  AND t.user_id = su.id
-  AND l.software_id = sv.id
+  AND sv.software_id = l.software_id 
+  AND s.id = sv.software_id
+GROUP BY software_id
 
 ---==========---
 SELECT t.version_id, sv.name as software, su.user_id count (t.id)
