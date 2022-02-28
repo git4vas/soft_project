@@ -1,5 +1,15 @@
 # LAB Project Report<br/>Ticketing Service Management for a Company
 
+
+## Implementation
+
+The database described below has been implemented in SQL for Postgres 12:
+* [soft_project.sql](soft_project.sql) - schema and table definitions;
+* [soft_project_user.sql](soft_project_data.sql) - user privileges and roles;
+* [soft_project_data.sql](soft_project_data.sql) - test-data inserts;
+* [soft_project_query.sql](soft_project_query.sql) - test-queries and updates, according to
+* the original [assignment](assignment.md).
+
 ## Relational Model
 
 ### **Entities** and *relations*

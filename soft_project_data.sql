@@ -1,5 +1,5 @@
 SET SEARCH_PATH TO soft_project;
-DELETE  FROM client;
+DELETE FROM client;
 INSERT INTO client (id, name, phone, email, address, city, zip)
 VALUES
   (1, 'Donec Felis', '06 83 88 75 11', 'ullamcorper.eu.euismod@icloud.com', 'Ap 298-9774 Nullam St.', 'Vandoeuvre-lès-Nancy', '50745'),
@@ -7,29 +7,29 @@ VALUES
   (3, 'Fabricator', '08 71 82 33 81', 'id.ante@protonmail.com', '3883 Urna. Av.', 'Saint-Dié-des-Vosges', '71064'),
   (4, 'BuzzFeed', '07 21 68 97 75', 'ac@protonmail.edu', 'P.O. Box 166, 6447 Sagittis. Ave', 'Angoulême', '21343'),
   (5, 'Arcu Vivamus Indus', '02 68 72 47 67', 'nullam@protonmail.org', '723-3277 Pharetra Av.', 'Villenave-d''Ornon', '80941');
-DELETE  FROM employee;
+DELETE FROM employee;
 INSERT INTO employee (id, name, phone, email, date_join)
 VALUES
-  (1, 'Chancellor Rich', '09 65 86 88 78', 'chancellorrich@google.edu'),
-  (2, 'Lora Poor', '09 65 86 88 78', 'chancellorrich@google.edu'),
-  (3, 'Sean Bridges', '08 77 88 82 64', 'seanbridges@hotmail.org'),
-  (4, 'Martena Watkins', '02 82 18 93 03', 'martenawatkins@yahoo.ca'),
-  (5, 'Maxwell Benson', '03 94 89 64 39', 'maxwellbenson4877@icloud.org'),
-  (6, 'Juliet Hendrix', '02 48 61 36 37', 'juliethendrix@hotmail.net'),
-  (7, 'Hannah Maldonacds', '06 19 61 91 50', 'hannahmaldonado1225@hotmail.ca'),
-  (8, 'Bevis Brady', '03 14 92 22 70', 'bevisbrady1170@aol.ca'),
-  (9, 'Harrison Thompson', '03 84 78 89 57', 'harrisonthompson@aol.org'),
-  (10, 'Minerva Roberts', '04 24 02 51 84', 'minervaroberts@google.edu'),
-  (11, 'Felix Evadams', '07 46 38 35 66', 'felixadams638@icloud.edu'),
-  (12, 'Amaya Oneal', '09 16 35 37 54', 'amayaoneal7001@yahoo.com'),
-  (13, 'Brock Rice', '03 38 91 16 86', 'brockrice@protonmail.couk'),
-  (14, 'Brett Ortega', '05 48 48 57 34', 'brettortega9648@protonmail.com'),
-  (15, 'Althea Hobbits', '09 76 06 61 13', 'altheahobbs9249@yahoo.net'),
-  (16, 'Ross Singleton', '07 18 66 65 55', 'rosssingleton4493@google.org'),
-  (17, 'Aileen Engels', '05 65 48 45 79', 'aileenmarks@outlook.net'),
-  (18, 'Trevor Vaughan', '06 55 45 57 86', 'trevorvaughn1028@yahoo.edu');
+  (2, 'Lora Poor', '09 65 86 88 78', 'chancellorrich@google.edu', '2020-02-02'),
+  (3, 'Sean Bridges', '08 77 88 82 64', 'seanbridges@hotmail.org', '2020-02-02'),
+  (4, 'Martena Watkins', '02 82 18 93 03', 'martenawatkins@yahoo.ca', '2020-02-02'),
+  (1, 'Chancellor Rich', '09 65 86 88 78', 'chancellorrich@google.edu', '2020-02-02'),
+  (5, 'Maxwell Benson', '03 94 89 64 39', 'maxwellbenson4877@icloud.org', '2020-02-02'),
+  (6, 'Juliet Hendrix', '02 48 61 36 37', 'juliethendrix@hotmail.net', '2020-02-02'),
+  (7, 'Hannah Maldonacds', '06 19 61 91 50', 'hannahmaldonado1225@hotmail.ca', '2020-02-02'),
+  (8, 'Bevis Brady', '03 14 92 22 70', 'bevisbrady1170@aol.ca', '2020-02-02'),
+  (9, 'Harrison Thompson', '03 84 78 89 57', 'harrisonthompson@aol.org', '2020-02-02'),
+  (10, 'Minerva Roberts', '04 24 02 51 84', 'minervaroberts@google.edu', '2020-02-02'),
+  (11, 'Felix Evadams', '07 46 38 35 66', 'felixadams638@icloud.edu', '2020-02-02'),
+  (12, 'Amaya Oneal', '09 16 35 37 54', 'amayaoneal7001@yahoo.com', '2020-02-02'),
+  (13, 'Brock Rice', '03 38 91 16 86', 'brockrice@protonmail.couk', '2020-02-02'),
+  (14, 'Brett Ortega', '05 48 48 57 34', 'brettortega9648@protonmail.com', '2020-02-02'),
+  (15, 'Althea Hobbits', '09 76 06 61 13', 'altheahobbs9249@yahoo.net', '2020-02-02'),
+  (16, 'Ross Singleton', '07 18 66 65 55', 'rosssingleton4493@google.org', '2020-02-02'),
+  (17, 'Aileen Engels', '05 65 48 45 79', 'aileenmarks@outlook.net', '2020-02-02'),
+  (18, 'Trevor Vaughan', '06 55 45 57 86', 'trevorvaughn1028@yahoo.edu', '2020-02-02');
 
-DELETE  FROM software_user;
+DELETE FROM software_user;
 INSERT INTO software_user (id, username, fullname, email, client_id, position, date_creation, is_admin)
 VALUES
 
@@ -79,8 +79,8 @@ VALUES
 (4, 3, '2022-12-05', '2024-07-24');
 
 
-  DELETE FROM software_version;
-  INSERT INTO software_version (id, software_id, state, date_release, date_final)
+DELETE FROM software_version;
+INSERT INTO software_version (id, software_id, state, date_release, date_final)
 VALUES
 (1, 1, 'old', '2022-01-01', '2022-02-18'),
 (2, 1, 'buggy', '2022-02-18', '2022-02-23'), --check date_release = date_final of previous one
@@ -91,8 +91,8 @@ VALUES
 (7, 5,NULL, '2022-01-05', NULL);
 
 
-  DELETE FROM user_version;
-  INSERT INTO user_version (user_id, version_id)
+DELETE FROM user_version;
+INSERT INTO user_version (user_id, version_id)
 VALUES --check??? 1-6, ,7 8 10 11 15, 9 12 13, 16 18-20, 14 17 34567
 (1, 3),
 (2, 3),

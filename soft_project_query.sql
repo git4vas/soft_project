@@ -1,7 +1,5 @@
-SET SEARCH_PATH TO soft_project--;
--------Database Users-----
-/*TODO Define privileges of the users: Administrator, Scrum Master, Quality Assurance tester
-*/
+SET SEARCH_PATH TO soft_project;
+
 
 ----------------------------------
 ----------Client Users------------
@@ -17,18 +15,21 @@ TODO user_id=current_user
 SELECT id AS ticket, version_id, status, request_cause, request FROM ticket
 WHERE user_id=10;
 /*Create new tickets +++ADMIN+++*/
-INSERT INTO ticket (id, user_id, version_id, request_cause, request, programmer_id, submitted_date, closed_date)
+INSERT INTO ticket (id, user_id, version_id, request_cause, request, programmer_id, date_submitted, date_closed)
 VALUES
- ((SELECT id FROM ticket ORDER BY id DESC LIMIT(1))+1, 18, 7, 'feature', 'make auto- increment and round buttons square', DEFAULT,now(), DEFAULT);
+ ((SELECT id FROM ticket ORDER BY id DESC LIMIT(1))+1, 18, 7, 'feature', 'make auto-increment and round buttons square', DEFAULT,now(), DEFAULT);
 /*
 FEATURE! DEFAULT id self-increment
 TODO x3: user_id=<AUTO>,
 -- CHECK version_id via {user_version.user_id, user_version.version_id} 
 -- if user.is_admin ticket.user_id=* via database users and permissions according to is_admin
 */;
-SELECT * FROM ticket WHERE id>10;
 
+--------see the added tickets--------
+SELECT * FROM ticket WHERE id>10;
 ;
+
+
 --------scrum rejects 12th ticket----------
 UPDATE ticket SET status='scrum_rejected' WHERE id=12;
 
@@ -37,9 +38,9 @@ delete HIS unassigned tickets (not accepted or rejected yet)
 FIXME user_id=<AUTO>
 */
 DELETE FROM ticket
-    WHERE user_id IN (SELECT id FROM software_user WHERE username=current_user)
+    WHERE user_id /* IN (SELECT id FROM software_user WHERE username=current_user) --use 2 or 18 as admin*/
     AND status IN ('submitted', 'scrum_rejected');
-/*
+/* = 18 and sm-rej
 View, and modify HIS??? unassigned tickets (not accepted or rejected yet)
 FIXME user_id=<AUTO>
 */
@@ -55,7 +56,7 @@ TODO
 /*
 View, modify, delete=(SET NULL)?? personal information
 /*DONE*/
-
+;
 SELECT * FROM software_user
     WHERE id=5;
 
@@ -69,6 +70,7 @@ DELETE FROM software_user
     WHERE id=5;
 --if one can self-destruct...
 /*FIXME user_id=<AUTO>*/
+/*FIXME cascade on fk deletion DONE??*/
 ;
 
 SELECT * FROM software_user
@@ -85,18 +87,21 @@ SELECT * FROM software_user
 (similar to Client User) View, modify, delete personal information
 TODO $$ Create a new ticket with high priority
 
-
+/*TODO*/
 --(similar to Client User) View his/her tickets and their status
+
+/*
+TODO $$ for admin-user
+*/
+
+
 --View all the tickets of the users of the client company
 --SELECT * FROM ticket WHERE user_id=<??a user from the same client company??>
-
-TODO $$ for admin-user:
-*/
 ;
 SELECT id AS ticket, version_id, status, request_cause, request FROM ticket
 WHERE user_id IN
-    (SELECT user_id FROM user_version.user_id
-    WHERE version.id IN
+    (SELECT user_id FROM user_version
+    WHERE version_id IN
         (SELECT version_id FROM user_version
         WHERE user_id=18 /*this admin*/
         )
@@ -110,17 +115,20 @@ DELETE FROM ticket
     WHERE status='submitted' OR status='scrum_rejected' OR status='solved'
     AND user_id IN
     (
-    SELECT user_id FROM user_version.user_id
-    WHERE version.id IN
+    SELECT user_id FROM user_version
+    WHERE version_id IN
         (SELECT version_id FROM user_version
         WHERE user_id=18 /*this admin*/
         )
     );
 
+
+SELECT * FROM ticket;
 /*
---View the number of tickets per software (version)
+-- View the number of tickets per software (version)
+-- of the client company this admin zorks for
 DONE
-TODO without nested select
+FIXME without nested select
 */
 
 SELECT
@@ -138,8 +146,24 @@ WHERE user_id IN
     )
 GROUP BY version_id;
 
+/*
+BUG HOWWWW??????*/
+--View the number of tickets per software (version)
+SELECT t.id
+FROM ticket as t
+WHERE user_id = 18
+  AND l.client_id = su.id
+  AND t.user_id = su.id
+  AND l.software_id = sv.id
 
-
+---==========---
+SELECT t.version_id, sv.name as software, su.user_id count (t.id)
+FROM ticket as t, software_version as sv, software_user as su
+WHERE t.user_id = su.user_id
+  AND sv.software_id = 2.client_id
+  AND su.id = 18;
+---==========---
+*/
 
 
 
@@ -152,7 +176,7 @@ WHERE client_id IN (SELECT client_id FROM software_user WHERE id=18);
 --query all tickets for the client whose admin is 18
  DONE */;
 
-SELECT id as ticket_id, submitted_date
+SELECT id as ticket_id, date_submitted
 FROM ticket
 WHERE user_id IN (
     SELECT id
@@ -166,14 +190,14 @@ WHERE user_id IN (
 
 --right way to get things done
 
-SELECT t.id as ticket_id, t.submitted_date
+SELECT t.id as ticket_id, t.date_submitted
 FROM ticket as t, software_user as s1, software_user as s2
 WHERE t.user_id = s1.id
   AND s1.client_id = s2.client_id
   AND s2.id = 18;
 
 /*
-SELECT t.id as ticket_id, t.submitted_date
+SELECT t.id as ticket_id, t.date_submitted
 FROM ticket as t, software_user as s1, software_user as s2
 WHERE t.user_id = s1.id
   AND s1.client_id = s2.client_id
@@ -251,7 +275,7 @@ Programmer
 
 TODO Update the status of an assigned ticket and store the historical state (**as a transaction**)
 CREATE TABLE IF NOT EXIST ticket_history
-id, ticket_id, state, change_date=now()
+id, ticket_id, state, date_change=now()
 
 TODO View all the assigned tickets (current and historical)
 id IN ticket_history
@@ -298,5 +322,5 @@ AND v.id = t.version_id;
 
 
 
-SELECT id, AGE(closed_date, submitted_date) as ticket_time_spent 
+SELECT id, AGE(date_closed, date_submitted) as ticket_time_spent 
 FROM ticket

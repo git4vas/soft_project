@@ -62,7 +62,7 @@ PRIMARY KEY (employee_id, software_id)
 
 CREATE TYPE SOFTWARE_STATE AS ENUM ('stable', 'buggy', 'old');
 DROP TABLE IF EXISTS software_version;
-
+CREATE TABLE IF NOT EXISTS software_version
 (
     software_id INT
         REFERENCES software(id)
@@ -155,9 +155,11 @@ CREATE TABLE IF NOT EXISTS ticket
 (
     id SERIAL PRIMARY KEY,
     user_id INT
-        REFERENCES software_user(id),
+        REFERENCES software_user(id)
+        ON DELETE CASCADE,
     version_id INT
-        REFERENCES software_version(id),
+        REFERENCES software_version(id)
+        ON DELETE CASCADE,
 /*FIXME test on postgres or create user18
 CHECK (version_id IN (SELECT version_id FROM user_version WHERE username IN (SELECT current_user)), --test =
 */
@@ -168,7 +170,6 @@ CHECK (version_id IN (SELECT version_id FROM user_version WHERE username IN (SEL
 
     request_cause CAUSE,
     request TEXT UNIQUE,
- 
     programmer_id INT
         REFERENCES employee(id) DEFAULT NULL,
 /*TODO CHECK employee(is_programmer='true')  */
