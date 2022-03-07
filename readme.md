@@ -10,19 +10,40 @@ The database described below has been implemented in SQL for Postgres 12:
 * [soft_project_query.sql](soft_project_query.sql) - test-queries and updates, according to
 * the original [assignment](assignment.md).
 
+## Tools
+Following tools and resources were used during project implementation:
+- [Postgres 12](https://www.postgresql.org) - database engine
+- [PgAdmin 4](https://www.pgadmin.org) - client for database tests
+- [Docker](https://www.docker.com) and [Docker Compose](https://docs.docker.com/compose/) - virtual infrastructure
+- [Valentina Studio](https://www.valentina-db.com/en/valentina-studio-overview) - modelling and ERD diagrams
+- [Visual Studio Code](https://code.visualstudio.com), [PostgreSQL client for VSCode](https://marketplace.visualstudio.com/items?itemName=cweijan.vscode-postgresql-client2) - SQL implementation and database tests
+- [DevDocs](https://devdocs.io/postgresql~12/) - PostgreSQL reference
+
+## Copyright
+2022 Vasilii Neganov, Grenoble
+
 ## Relational Model
 
 ### **Entities** and *relations*
 
 We started from analyzing the business model.
-The basic entities are **client**, a company, **users** of which are *using* according to the contract (**license**) (a) **version**(-s) of one or more pieces of **software**, *serviced* by the **development team** which *consists* of **employees** on the basis of users' *requests* stated in **tickets**. As far as the relation user--version is many-to-many, a table **user-version** similar to the one assigning employees to the software (dev_team) or 'lilcense' which embodies client--software many-to-many relation, was required in addition to these eight, totaling in nine tables.
+The basic entities are **client**, a company *hiring* **users** who are *using* according to the contract (**license**) **software** which can *have* several **versions**, and is *serviced* by the **development team** which *consists* of **employees** on the basis of users' requests stated in **tickets**.
+
+Similarly to the **dev_team** many-to-many relation employee--software, **user-license** table embodies the permissions of **users** in the framework of their companie's **licence** to *use* the specific **software** and to *issue* **tickets** thereupon. An additional table was implemented for this purpose.
+
+Since "The new version of the software is updated for all the companies that have a current contract" the **software** was associated with the **client** company directly, whereas the current version is a foreign key determined when issuing the ticket.
+
+Thus, seven tables for entities and two for many-to-many relations are required, which totals in nine.
+
 
 ### `Attributes`
 
 Each Entity table (**client**, **software**, **version**, **employees**, **user**, and **ticket**) has self-incrementing integer `id` as a primary key (PK). **client**, **user**, and **software** have unique (U) `name` keys for better handling by human beings. Primary keys of many-to-many tables are the pairs of the corresponding foreign keys (FK).
-Employees are assigned to software as an already mentioned **development team** whereas `scrum masters` or `quality assurance specialists`, as there is only one of each per software, can be added as attributes to the **software**.
+Employees are assigned to software as an already mentioned **development team** whereas `scrum masters` or `quality assurance testers`, as there is only one of each per software, can be added as attributes to the **software**.
 
 The **license** table have additional attributes characterizing the contracts -- the `dates` within which it is valid. All these considerations along with some checks and additional attributes can be clearly seen from the diagram.
+
+TODO In the latest implementation (March 2022 and later), every client is using the latest **software version** with the maximum version id. New tickets are *assigned* to it with its state being triggered to `buggy` or `old` according to the `ticket_type` (`bug` or `feature`, respectively). After closing the ticket by the scrum master (`status='solved'`), the new version is created with the same `software_id`, `id` incremented and `state='stable'`.
 
 ## ERD
 
@@ -40,7 +61,7 @@ All the employees developing all the software provided by the company
 * is system administrator?
 
 TODO
->    if yes, this user is granted the highest privileges (cf. soft_project_users.sql)
+> if yes, this user is granted the highest privileges (cf. soft_project_users.sql)
 * is prog?
   * (prog) work hours
   * (prog) availability

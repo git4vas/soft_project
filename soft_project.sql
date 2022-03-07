@@ -1,10 +1,11 @@
 BEGIN;
-
 DROP SCHEMA IF EXISTS soft_project CASCADE;
-
 CREATE SCHEMA IF NOT EXISTS soft_project;
-
 SET SEARCH_PATH TO soft_project;
+
+-------------EMPLOYEE----------------------------------------------------------
+--all employees, 1 sysadmin has max rights, programmers have additional options
+-------------------------------------------------------------------------------
 
 DROP TABLE IF EXISTS employee;
 CREATE TABLE IF NOT EXISTS employee
@@ -25,7 +26,9 @@ CREATE TABLE IF NOT EXISTS employee
     wrk_dev VARCHAR (255) DEFAULT 'computer & monitor'
 );
 
------------------------------
+-------------SOFTWARE---------------------------------------------
+--software with quality assurance tester and scrum master assigned
+------------------------------------------------------------------
 
 DROP TABLE IF EXISTS software;
 CREATE TABLE IF NOT EXISTS software
@@ -44,7 +47,9 @@ CREATE TABLE IF NOT EXISTS software
 -- cf. version
 );
 
-------------------------------
+-------------TEAM (employee_software)----------
+--Employees associated with a specific software
+-----------------------------------------------
 
 DROP TABLE IF EXISTS dev_team;
 CREATE TABLE IF NOT EXISTS dev_team
@@ -58,16 +63,18 @@ CREATE TABLE IF NOT EXISTS dev_team
 PRIMARY KEY (employee_id, software_id)
 );
 
-------------------------------
+-------------VERSION---------------------------
+--Software version control---------------------
+-----------------------------------------------
 
 CREATE TYPE SOFTWARE_STATE AS ENUM ('stable', 'buggy', 'old');
 DROP TABLE IF EXISTS software_version;
 CREATE TABLE IF NOT EXISTS software_version
 (
+    id SERIAL PRIMARY KEY,
     software_id INT
         REFERENCES software(id)
         ON DELETE CASCADE,
-    id SERIAL PRIMARY KEY,
     state SOFTWARE_STATE,
       --CHECK (state IN ('stable', 'buggy', 'old')),
 
@@ -76,7 +83,9 @@ CREATE TABLE IF NOT EXISTS software_version
     comments TEXT
 );
 
-------------------------------
+-------------CLIENT------------------------------
+--Companies using Software, details, contact info
+-------------------------------------------------
 
 DROP TABLE IF EXISTS client;
 CREATE TABLE IF NOT EXISTS client
@@ -91,10 +100,12 @@ CREATE TABLE IF NOT EXISTS client
     contact_info TEXT
 );
 
-------------------------------
+-------------USER_-------------------------------
+--users associated with a specific client company
+-------------------------------------------------
 
-DROP TABLE IF EXISTS software_user;
-CREATE TABLE IF NOT EXISTS software_user
+DROP TABLE IF EXISTS user_;
+CREATE TABLE IF NOT EXISTS user_
 (
     id SERIAL PRIMARY KEY,
     username VARCHAR(100) UNIQUE,
@@ -109,45 +120,47 @@ CREATE TABLE IF NOT EXISTS software_user
 );
 
 
----------------------------------
---table to assign version to user
----------------------------------
+-------------LICENSE----------------------
+--table to assign software to client users
+------------------------------------------
 
-DROP TABLE IF EXISTS user_version;
-CREATE TABLE IF NOT EXISTS user_version
-(
-	version_id INT
-        REFERENCES software_version (id)
-        ON DELETE CASCADE,
-    user_id INT
-        REFERENCES software_user(id)
-        ON DELETE CASCADE,
-PRIMARY KEY (user_id, version_id)
-);
-
-
--------------LICENSE----------------
---table to assign software to client
-------------------------------------
-
+DROP TABLE IF EXISTS license;
 CREATE TABLE IF NOT EXISTS license
 (
+    id SERIAL PRIMARY KEY, 
     client_id INT 
         REFERENCES client(id),
     software_id INT 
         REFERENCES software(id),
-
 date_initial DATE,
-date_end DATE CHECK (date_initial < date_end),
-PRIMARY KEY (client_id, software_id)
+date_end DATE CHECK (date_initial < date_end)
+);
+
+
+-------------user_license---------------------------
+--table to include client users into license--------
+----------------------------------------------------
+
+DROP TABLE IF EXISTS user_license;
+CREATE TABLE IF NOT EXISTS user_license
+(
+    user_id INT
+        REFERENCES user_ (id)
+        ON DELETE CASCADE,
+	license_id INT
+        REFERENCES license (id)
+        ON DELETE CASCADE,
+PRIMARY KEY (license_id, user_id)
 );
 
 
 
--------------TICKET----------------
+-------------TICKET-----------------------------
+--table to manage ticket information------------
+------------------------------------------------
 
 CREATE TYPE WORKFLOW AS ENUM ('submitted', 'scrum_accept', 'dev_assigned', 'scrum_rejected', 'dev_solved', 'qa_approved', 'solved');
-CREATE TYPE CAUSE AS ENUM ('bug', 'feature');
+CREATE TYPE TTYPE AS ENUM ('bug', 'feature');
 
 
 DROP TABLE IF EXISTS ticket;
@@ -155,7 +168,7 @@ CREATE TABLE IF NOT EXISTS ticket
 (
     id SERIAL PRIMARY KEY,
     user_id INT
-        REFERENCES software_user(id)
+        REFERENCES user_ (id)
         ON DELETE CASCADE,
     version_id INT
         REFERENCES software_version(id)
@@ -168,21 +181,20 @@ CHECK (version_id IN (SELECT version_id FROM user_version WHERE username IN (SEL
 
 /*TODO trigger the correct workflow*/
 
-    request_cause CAUSE,
-    request TEXT UNIQUE,
+    ticket_type TTYPE,
+    description TEXT UNIQUE, --(U) prevents from submitting the same ticket accidentally
     programmer_id INT
         REFERENCES employee(id) DEFAULT NULL,
 /*TODO CHECK employee(is_programmer='true')  */
 
-/*TODO trigger: if cause='bug' software_version.state='buggy' 
-                if cause='feature' software_version.state='old' */
+/*TODO trigger: if ticket_type='bug' software_version.state='buggy' 
+                if ticket_type='feature' software_version.state='old' */
 
     ticket_priority INT DEFAULT 0, 
 
 /*
-TODO $$ if (SELECT is_admin FROM software_user) ticket_priority++ */
-/*
-TODO $$ if software_version(state)='buggy' ticket_priority++) */
+TODO $$ if (SELECT is_admin FROM user) ticket_priority++
+TODO $$ if software_version(state)='buggy' ticket_priority++ */
 
     date_submitted DATE DEFAULT now() NOT NULL,
     date_closed DATE CHECK (date_closed is NULL OR date_closed >= date_submitted) DEFAULT NULL
@@ -192,12 +204,10 @@ FIXME ticket_time_spent INTERVAL
 SELECT id, (date_closed - date_submitted) as ticket_time_spent 
 FROM ticket
 
-OR
+--OR--
 
 SELECT id, AGE(date_closed, date_submitted) as ticket_time_spent 
 FROM ticket
-
-
 */
 
 );

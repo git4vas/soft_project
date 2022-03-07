@@ -12,10 +12,18 @@ in separate file
 TODO user_id=current_user
 -- if user.is_admin ticket.user_id=* via database users and permissions according to is_admin
 */;
-SELECT id AS ticket, version_id, status, request_cause, request FROM ticket
+
+
+
+--
+SELECT * FROM license;
+
+
+
+SELECT id AS ticket, version_id, status, ticket_type, description FROM ticket
 WHERE user_id=10;
 /*Create new tickets +++ADMIN+++*/
-INSERT INTO ticket (id, user_id, version_id, request_cause, request, programmer_id, date_submitted, date_closed)
+INSERT INTO ticket (id, user_id, version_id, ticket_type, description, programmer_id, date_submitted, date_closed)
 VALUES
  ((SELECT id FROM ticket ORDER BY id DESC LIMIT(1))+1, 18, 7, 'feature', 'make auto-increment and round buttons square', DEFAULT,now(), DEFAULT);
 /*
@@ -98,7 +106,7 @@ TODO $$ for admin-user
 --View all the tickets of the users of the client company
 --SELECT * FROM ticket WHERE user_id=<??a user from the same client company??>
 ;
-SELECT id AS ticket, version_id, status, request_cause, request FROM ticket
+SELECT id AS ticket, version_id, status, ticket_type, description FROM ticket
 WHERE user_id IN
     (SELECT user_id FROM user_version
     WHERE version_id IN
@@ -137,10 +145,10 @@ FROM
    ticket
 WHERE user_id IN
     (SELECT id
-    FROM software_user
+    FROM software_version
     WHERE client_id IN
         (SELECT client_id
-        FROM software_user
+        FROM software_version
         WHERE id=18
         )
     )
@@ -211,7 +219,7 @@ join????*/
 
 
 ------------------------------
-INSERT INTO ticket (request_cause, request)
+INSERT INTO ticket (ticket_type, description)
     WHERE status='submitted' OR status='scrum_rejected' AND user_id IN AND id=1
             (SELECT id
             FROM software_user

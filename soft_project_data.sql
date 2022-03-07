@@ -29,8 +29,8 @@ VALUES
   (17, 'Aileen Engels', '05 65 48 45 79', 'aileenmarks@outlook.net', '2020-02-02'),
   (18, 'Trevor Vaughan', '06 55 45 57 86', 'trevorvaughn1028@yahoo.edu', '2020-02-02');
 
-DELETE FROM software_user;
-INSERT INTO software_user (id, username, fullname, email, client_id, position, date_creation, is_admin)
+DELETE FROM user_;
+INSERT INTO user_ (id, username, fullname, email, client_id, position, date_creation, is_admin)
 VALUES
 
 (1, 'enoch', 'Enoch Lowe', 'Enoch_Lowe7757@hourpy.biz', 1, 'Service Supervisor', '2021-11-16', 'False'),
@@ -64,58 +64,73 @@ VALUES
 (5, 'stupidsoft', 9, 10);
 
 DELETE FROM license;
-INSERT INTO license (client_id, software_id, date_initial, date_end)
+INSERT INTO license (id, client_id, software_id, date_initial, date_end)
 VALUES
-(1, 1, '2021-09-04', '2022-09-06'),
-(1, 3, '2022-04-06', '2022-12-29'),
-(1, 5, '2021-04-05', '2023-01-17'),
-(2, 2, '2021-04-17', '2021-11-13'),
-(2, 4, '2021-12-05', '2023-07-28'),
-(2, 5, '2021-09-04', '2022-09-06'),
-(3, 1, '2021-04-06', '2021-12-29'),
-(3, 2, '2021-04-05', '2023-01-17'),
-(5, 3, '2022-04-17', '2024-10-13'),
-(5, 4, '2022-12-05', '2024-07-24'),
-(4, 3, '2022-12-05', '2024-07-24');
+(DEFAULT, 1, 1, '2021-09-04', '2022-09-06'),
+(DEFAULT, 1, 3, '2022-04-06', '2022-12-29'),
+(DEFAULT, 1, 5, '2021-04-05', '2023-01-17'),
+(DEFAULT, 2, 2, '2021-04-17', '2021-11-13'),
+(DEFAULT, 2, 4, '2021-12-05', '2023-07-28'),
+(DEFAULT, 2, 5, '2021-09-04', '2022-09-06'),
+(DEFAULT, 3, 1, '2021-04-06', '2021-12-29'),
+(DEFAULT, 3, 2, '2021-04-05', '2023-01-17'),
+(DEFAULT, 5, 3, '2022-04-17', '2024-10-13'),
+(DEFAULT, 5, 4, '2022-12-05', '2024-07-24'),
+(DEFAULT, 4, 3, '2022-12-05', '2024-07-24');
 
 
 DELETE FROM software_version;
-INSERT INTO software_version (id, software_id, state, date_release, date_final)
+INSERT INTO software_version (id, software_id, state, date_release, date_final, comments)
 VALUES
-(1, 1, 'old', '2022-01-01', '2022-02-18'),
-(2, 1, 'buggy', '2022-02-18', '2022-02-23'), --check date_release = date_final of previous one
-(3, 1, 'stable', '2022-02-23', NULL),
-(4, 2,NULL, '2022-01-02', NULL),
-(5, 3,NULL, '2022-01-03', NULL),
-(6, 4,NULL, '2022-01-04', NULL),
-(7, 5,NULL, '2022-01-05', NULL);
+(1, 1, 'old', '2022-01-01', '2022-02-18', 'got old as soon as an improvement proposal was accepted'),
+(2, 1, 'buggy', '2022-02-18', '2022-02-23', 'got updated for everybody after the bugfix'), --check date_release = date_final of previous one
+(3, 1, 'stable', '2022-02-23', NULL, NULL),
+(4, 2, NULL, '2022-01-02',  NULL, 'claimed stable by scrum MSTR or by default??'),
+(5, 3, NULL, '2022-01-03', NULL, NULL),
+(6, 4, NULL, '2022-01-04', NULL, NULL),
+(7, 5, NULL, '2022-01-05', NULL, NULL);
 
 
-DELETE FROM user_version;
-INSERT INTO user_version (user_id, version_id)
-VALUES --check??? 1-6, ,7 8 10 11 15, 9 12 13, 16 18-20, 14 17 34567
-(1, 3),
-(2, 3),
-(3, 3),
-(4, 3),
+DELETE FROM user_license;
+INSERT INTO user_license (user_id, license_id)
+VALUES 
+/*TODO check $$ */
+(1, 1),
+(2, 1),
+(3, 1),
+(4, 1),
+(5, 1),
+(6, 1),
+(3, 2),
+(4, 2),
 (5, 3),
 (6, 3),
+
 (7, 4),
-(8, 4),
-(10, 4),
 (11, 4),
 (15, 4),
-(9, 5),
-(12, 5),
-(13, 5),
-(16, 6),
-(18, 6),
-(19, 6),
-(20, 6),
-(14, 7),
-(17, 7),
-(14, 6),
-(17, 6);
+(7, 5),
+(8, 5),
+(7, 6),
+(8, 6),
+(10, 6),
+
+(9, 7),
+(12, 7),
+(13, 7),
+(9, 8),
+(12, 8),
+(13, 8),
+
+(16, 9),
+(18, 9),
+(19, 9),
+(20, 9),
+
+(14, 10),
+(17, 10),
+(14, 11);
+
 
 DELETE FROM dev_team;
 INSERT INTO dev_team (employee_id, software_id)
@@ -139,9 +154,10 @@ VALUES --check??? 1-6, ,7 8 10 11 15, 9 12 13, 16 18-20, 14 17 12345
 (17, 3),
 (18, 5);
 
+
 DELETE FROM ticket;
   --INSERT INTO ticket (id, user_id, version_id, status=auto, , )
-INSERT INTO ticket (id, user_id, version_id, request_cause, request, programmer_id, date_submitted, date_closed)
+INSERT INTO ticket (id, user_id, version_id, ticket_type, description, programmer_id, date_submitted, date_closed)
 VALUES
  (1, 18, 7, 'feature', 'Suspendisse aliquet, sem ut cursus luctus, ipsum leo elementum sem,', 6,'2021-01-30', '2022-05-03'),
  (2, 5, 7, 'feature', 'dolor. Fusce feugiat. Lorem ipsum dolor sit amet, consectetuer adipiscing', 4,'2021-07-16', '2022-02-12'),
